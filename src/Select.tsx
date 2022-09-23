@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import styles from './Select.module.css';
 
 type SelectOption = {
@@ -12,15 +13,44 @@ type SelectProps = {
 }
 
 const Select = ({ options, value, onChange }: SelectProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
+
+  const clearOptions = (e: any) => {
+    e.stopPropagation();
+    onChange(undefined);
+  };
+
+  const selectOption = (option: SelectOption) => onChange(option);
+  const isOptionSelected = (option: SelectOption) => option === value;
+
+  console.log('rerender')
+
   return (
-    <div tabIndex={0} className={styles.container}>
-      <span className={styles.value}>Value</span>
-      <button className={styles["clear-btn"]}>&times;</button>
+    <div
+      onClick={() => setIsOpen(p => !p)}
+      onBlur={() => setIsOpen(false)}
+      className={styles.container}
+      tabIndex={0}
+    >
+      <span className={styles.value}>{value?.label}</span>
+      <button onClick={(e) => clearOptions(e)} className={styles["clear-btn"]}>&times;</button>
       <div className={styles.divider}></div>
       <div className={styles.caret}></div>
-      <ul className={styles.options}>
-        {options.map(option => (
-          <li key={option.label} className={styles.option}>
+      <ul className={`${styles.options} ${isOpen ? styles.show : ""}`}>
+        {options.map((option, index) => (
+          <li
+            onClick={(e) => {
+              e.stopPropagation();
+              selectOption(option);
+              setIsOpen(false);
+            }}
+            onMouseEnter={() => {
+              console.log('mouseENter')
+              setHighlightedIndex(index)
+            }}
+            key={option.label + Math.random()}
+            className={`${styles.option} ${isOptionSelected(option) ? styles.selected : ""} ${highlightedIndex === index ? styles.highlighted : ""}`}>
             {option.label}
           </li>
         ))}

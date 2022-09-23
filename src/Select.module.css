@@ -50,7 +50,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  /* display: none; */
+  display: none;
   max-height: 15em;
   overflow-y: auto;
   border: .05em solid #777;
@@ -71,11 +71,11 @@
   cursor: pointer;
 }
 
-.option.highlighted {
+.option.selected {
   background-color: hsl(200, 100%, 70%);
   color: white;
 }
 
-.option.selected {
+.option.highlighted {
   background-color: hsl(200, 100%, 50%);
 }
