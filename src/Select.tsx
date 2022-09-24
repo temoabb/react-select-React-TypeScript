@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styles from './Select.module.css';
 
 export type SelectOption = {
@@ -24,16 +24,9 @@ type SelectProps = {
 
 
 const Select = ({ multiple, options, value, onChange }: SelectProps) => {
-  console.log("Rendering Select");
-
   const [isOpen, setIsOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
-
-  useEffect(() => {
-    if (isOpen) {
-      setHighlightedIndex(0)
-    }
-  }, [isOpen])
+  const containerRef = useRef<HTMLInputElement>(null);
 
   const clearOptions = (e: any) => {
     e.stopPropagation();
@@ -56,8 +49,49 @@ const Select = ({ multiple, options, value, onChange }: SelectProps) => {
 
   const isOptionSelected = (option: SelectOption) => multiple ? value.includes(option) : option === value;
 
+  useEffect(() => {
+    if (isOpen) {
+      setHighlightedIndex(0)
+    }
+  }, [isOpen])
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.target !== containerRef.current) return;
+
+      switch (e.code) {
+        case 'Enter':
+        case 'Space':
+          setIsOpen(ps => !ps);
+          if (isOpen) selectOption(options[highlightedIndex]);
+          break;
+        case "ArrowUp":
+        case "ArrowDown": {
+          if (!isOpen) {
+            setIsOpen(true);
+            break;
+          }
+          const newValue = highlightedIndex + (e.code === "ArrowDown" ? 1 : -1);
+          if (newValue >= 0 && newValue < options.length) {
+            setHighlightedIndex(newValue);
+          }
+          break;
+        }
+        case 'Escape':
+          setIsOpen(false);
+          break;
+      }
+    };
+
+    containerRef.current?.addEventListener('keydown', handler);
+
+    return () => containerRef.current?.removeEventListener('keydown', handler);
+
+  }, [isOpen, highlightedIndex, options])
+
   return (
     <div
+      ref={containerRef}
       onClick={() => setIsOpen(p => !p)}
       onBlur={() => setIsOpen(false)}
       className={styles.container}
@@ -92,7 +126,6 @@ const Select = ({ multiple, options, value, onChange }: SelectProps) => {
               setIsOpen(false);
             }}
             onMouseEnter={() => {
-              console.log('mouseENter')
               setHighlightedIndex(index)
             }}
             key={option.value}

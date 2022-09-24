@@ -18,8 +18,6 @@ function App() {
   const [value1, setValue1] = useState<SelectOption | undefined>(options[0]);
   const [value2, setValue2] = useState<SelectOption[]>([options[0]]);
 
-  console.log('rendering App')
-
   return (
     <div className="App">
       <Select
