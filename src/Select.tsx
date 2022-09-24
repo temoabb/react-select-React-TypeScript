@@ -69,6 +69,7 @@ const Select = ({ multiple, options, value, onChange }: SelectProps) => {
             ? value.map(v => (
               <button
                 key={Math.random()}
+                className={styles["option-badge"]}
                 onClick={(e) => {
                   e.stopPropagation();
                   selectOption(v)
