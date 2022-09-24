@@ -9,19 +9,12 @@ const options = [
   { label: "Fiveth", value: 5 },
   { label: "Sixth", value: 6 },
   { label: "Seventh", value: 7 },
-  { label: "Eighth", value: 8 },
-  { label: "First", value: 1 },
-  { label: "Second", value: 2 },
-  { label: "Third", value: 3 },
-  { label: "Fourth", value: 4 },
-  { label: "Fiveth", value: 5 },
-  { label: "Sixth", value: 6 },
-  { label: "Seventh", value: 7 },
-  { label: "Eighth", value: 8 },
+  { label: "Eighth", value: 8 }
 ];
 
 function App() {
   const [value, setValue] = useState<typeof options[0] | undefined>(options[0]);
+  console.log('rendering App')
 
   return (
     <div className="App">

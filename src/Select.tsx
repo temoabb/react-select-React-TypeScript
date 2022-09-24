@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './Select.module.css';
 
 type SelectOption = {
   label: string
-  value: any
+  value: string | number
 }
 
 type SelectProps = {
@@ -13,18 +13,31 @@ type SelectProps = {
 }
 
 const Select = ({ options, value, onChange }: SelectProps) => {
+  console.log("Rendering Select");
+
   const [isOpen, setIsOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
+
+  useEffect(() => {
+    if (isOpen) {
+      setHighlightedIndex(0)
+    }
+  }, [isOpen])
 
   const clearOptions = (e: any) => {
     e.stopPropagation();
     onChange(undefined);
   };
 
-  const selectOption = (option: SelectOption) => onChange(option);
-  const isOptionSelected = (option: SelectOption) => option === value;
+  const selectOption = (option: SelectOption) => {
+    if (option !== value) {
+      onChange(option)
+    } else {
+      console.log("Option === value");
+    }
+  };
 
-  console.log('rerender')
+  const isOptionSelected = (option: SelectOption) => option === value;
 
   return (
     <div
@@ -49,7 +62,7 @@ const Select = ({ options, value, onChange }: SelectProps) => {
               console.log('mouseENter')
               setHighlightedIndex(index)
             }}
-            key={option.label + Math.random()}
+            key={option.value}
             className={`${styles.option} ${isOptionSelected(option) ? styles.selected : ""} ${highlightedIndex === index ? styles.highlighted : ""}`}>
             {option.label}
           </li>
